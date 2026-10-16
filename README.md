@@ -11,9 +11,9 @@ Framework and infrastructure only. The source repository contained only this REA
 - Drizzle schema, versioned SQL migration, and constraints/indexes for 11 PostgreSQL tables.
 - Shared compiled ESM request/response contracts for all planned feature areas.
 - Typed frontend API client, PostgreSQL migration/contract tests, and GitHub Actions CI with PostgreSQL.
-- Empty tracked folders for planned routes, UI components, features, and backend modules.
+- Connected placeholder pages, minimal navigation, per-feature API functions, and backend module routes/controllers/services.
 
-**No page implementations, authentication flows, business endpoints, or design components are included.** Database tables and API contracts are ready for feature implementation. The only app component is the framework-required root layout. Route directories contain `.gitkeep`, not `page.tsx`, so the frontend intentionally serves Next.js's default 404 until pages are implemented. Empty folders do not create routes or access protection. There is no frontend health widget; the API client is verified in the integration test.
+**Connected scaffold only: no real authentication, CRUD, calculation, order, or support workflows are implemented.** Planned pages now contain titles, purpose descriptions, and TODOs. Development-only status endpoints drive loading/connected/error indicators through each feature's API file. Registered business operations return HTTP 501. Account/admin pages show no private data and explicitly mark authentication/authorization as pending. See [the feature-to-file map](docs/scaffold-map.md).
 
 ## Requirements and setup
 
@@ -52,7 +52,7 @@ Next.js development and production builds explicitly use Webpack. Turbopack's CS
 npm run dev
 ```
 
-Frontend: `http://localhost:3000` (default 404, intentionally). API: `http://localhost:4000/api/health`.
+Frontend: `http://localhost:3000` (connected placeholders with navigation). API: `http://localhost:4000/api/health`.
 
 If PostgreSQL is unavailable, the backend fails startup. Use `npm run dev:frontend` to work on the frontend independently. `npm run db:down` stops the local database without deleting its named data volume.
 
@@ -86,7 +86,7 @@ Use one root lockfile. Install dependencies from the root with `npm install <pac
 frontend/
   public/{images,models}/
   src/
-    app/                 Root layout, Tailwind entry point, empty route folders
+    app/                 Thin placeholder pages, root layout, Tailwind entry point
     features/            auth, users, home, calculator, catalog, cart, orders, support
     components/          ui, layout, motion
     lib/                 API client, shared UI class utility
@@ -113,7 +113,7 @@ compose.yaml             Local PostgreSQL 18 with persistent data volume
 
 Keep future route files focused on page composition. Feature-specific components, hooks, and HTTP calls belong in `frontend/src/features/<feature>/`. Generic primitives belong in `components/ui`. Base UI is installed, but no UI components have been invented. `@/*` maps to `frontend/src/*`.
 
-For a backend module, add `<module>.routes.ts`, `<module>.controller.ts`, and `<module>.service.ts` when implementing the feature. Relational tables live centrally in `backend/src/db/schema.ts`, with database types inferred from Drizzle rather than separate model files. Each module README documents its boundary. There are no fake implementations or mounted unfinished routes. Implement authentication and authorization before mounting private endpoints.
+Backend modules now include `<module>.routes.ts`, `<module>.controller.ts`, and `<module>.service.ts` connected through Express. Relational tables live centrally in `backend/src/db/schema.ts`, with database types inferred from Drizzle rather than separate model files. Each module README documents its boundary. Business handlers explicitly return 501 until implemented. Implement authentication, authorization, and ownership checks before returning any private data or performing writes.
 
 Import shared schemas and inferred types from `@solara/contracts`. ESM exports point to `dist/`, built with TypeScript NodeNext. The contracts watcher updates compiled files; Next.js observes the workspace dependency, and the backend watcher includes contract output. Contracts contain no models, database connections, or secrets. Backend validation remains mandatory.
 

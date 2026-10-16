@@ -2,7 +2,7 @@
 
 Order creation, price snapshots, owner history, and authorized status changes.
 
-Reserved implementation files: orders.routes.ts, orders.controller.ts, and orders.service.ts. Add them when the feature is implemented; no business routes are mounted now.
+Connected files: orders.routes.ts, orders.controller.ts, and orders.service.ts. The router is mounted in app.ts. GET /scaffold-status is development-only and returns no business/private data; all registered business operations return explicit HTTP 501 until implemented. Replace TODO handlers only after implementing validation and access checks.
 
 Database tables: orders, orderItems, products, imported from ../../db/schema.js. Access the initialized Drizzle instance with getDatabase() from ../../config/database.js. Use transactions for related writes.
 

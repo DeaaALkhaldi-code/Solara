@@ -1,4 +1,5 @@
 export * from "./common.js";
+export * from "./scaffold.js";
 export * from "./auth.js";
 export * from "./users.js";
 export * from "./products.js";

@@ -6,7 +6,7 @@ import { logger } from "./lib/logger.js";
 async function start() {
   const env = readEnv();
   await connectDatabase(env.DATABASE_URL);
-  const server = createApp(env.FRONTEND_ORIGIN).listen(env.PORT, () => {
+  const server = createApp(env.FRONTEND_ORIGIN, env.NODE_ENV).listen(env.PORT, () => {
     logger.info(`Solara API listening on port ${env.PORT}`);
   });
 

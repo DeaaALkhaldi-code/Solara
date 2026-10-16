@@ -2,6 +2,6 @@
 
 Client cart state, quantities, and checkout handoff.
 
-Reserved components/ and hooks/ folders are intentionally empty. Add cart.api.ts for feature HTTP functions when needed, using ../../lib/api-client and schemas from @solara/contracts. Route files under src/app should compose feature components rather than contain business logic.
+The components/cart-scaffold.tsx entry point composes a shared placeholder and passes its typed api.ts diagnostic function. Implement feature components/hooks inside these existing folders. Keep route files thin and use the existing API client and @solara/contracts for future business requests.
 
-Use React Hook Form with @hookform/resolvers/zod for forms, Base UI/Tailwind for shared UI, and Motion when animation is needed. Shared generic elements belong in src/components/. No page or feature implementation is included. Never import backend source or database libraries.
+Use React Hook Form with @hookform/resolvers/zod for forms, Base UI/Tailwind for shared UI, and Motion when animation is needed. Shared generic elements belong in src/components/. Pages contain placeholders only; business feature implementation remains TODO. Never import backend source or database libraries.

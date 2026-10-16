@@ -2,10 +2,10 @@
 
 ## Active API
 
-GET /api/health returns HTTP 200 with { "status": "ok" }. It reports process health, not continuous database readiness. Server startup verifies PostgreSQL before listening. All business routes are currently unmounted and return 404.
+GET /api/health returns HTTP 200 with { "status": "ok" }. It reports process health, not continuous database readiness. Server startup verifies PostgreSQL before listening. Planned business routes are mounted as TODO handlers returning HTTP 501 (NOT_IMPLEMENTED); unknown URLs return 404.
 
 Errors: { "error": { "code": "NOT_FOUND", "message": "Endpoint not found." } }.
-Codes include NOT_FOUND (404), INVALID_JSON (400), PAYLOAD_TOO_LARGE (413), UNSUPPORTED_ENCODING (415), VALIDATION_ERROR (400), and INTERNAL_ERROR (500). Never serialize SQL/driver errors or secrets.
+Codes include NOT_IMPLEMENTED (501), NOT_FOUND (404), INVALID_JSON (400), PAYLOAD_TOO_LARGE (413), UNSUPPORTED_ENCODING (415), VALIDATION_ERROR (400), and INTERNAL_ERROR (500). Never serialize SQL/driver errors or secrets.
 
 ## Shared contracts
 
@@ -35,7 +35,7 @@ These are starting contracts for implementation, not working business endpoints.
 | Support | /api/tickets, /api/tickets/:id, /api/tickets/:id/replies | Owner conversation; admin support |
 | Internal notes | /api/tickets/:id/notes | Admin only; separate response contract to be added |
 
-Paths are specifications only. Feature modules will define methods/controllers/services when implemented. Use one /api prefix throughout.
+These paths are registered through existing module routes/controllers/services and deliberately return 501 until implemented. Use one /api prefix throughout. GET /api/{auth,users,products,estimates,orders,tickets}/scaffold-status returns only the shared diagnostic response in development; it returns 404 in production/test. This adds no fields to real business contracts. See scaffold-map.md.
 
 ## API client
 
