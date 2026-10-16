@@ -4,7 +4,7 @@ import nextTypescript from "eslint-config-next/typescript";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores(["**/node_modules/**", "**/.next/**", "**/dist/**", "**/next-env.d.ts", "docs/archive/**"]),
+  globalIgnores(["**/node_modules/**", "**/.next/**", "**/dist/**", "**/next-env.d.ts", "backend/drizzle/meta/**", "docs/archive/**"]),
   ...nextVitals.map((config) => ({ ...config, files: ["frontend/**/*.{js,jsx,ts,tsx,mjs}"] })),
   ...nextTypescript.map((config) => ({ ...config, files: ["frontend/**/*.{js,jsx,ts,tsx,mjs}"] })),
   ...tseslint.configs.recommended.map((config) => ({ ...config, files: ["backend/**/*.ts", "packages/**/*.ts"] })),
@@ -12,7 +12,7 @@ export default defineConfig([
     files: ["frontend/src/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": ["error", { patterns: [{
-        group: ["**/backend/**", "@solara/backend", "@solara/backend/*", "mongoose", "mongoose/*", "express", "dotenv", "dotenv/*"],
+        group: ["**/backend/**", "@solara/backend", "@solara/backend/*", "pg", "pg/*", "drizzle-orm", "drizzle-orm/*", "express", "dotenv", "dotenv/*"],
         message: "Frontend code must call the API rather than import backend infrastructure.",
       }] }],
     },
@@ -21,7 +21,7 @@ export default defineConfig([
     files: ["packages/contracts/src/**/*.ts"],
     rules: {
       "no-restricted-imports": ["error", { patterns: [{
-        group: ["node:*", "**/backend/**", "mongoose", "mongoose/*", "express", "dotenv", "dotenv/*"],
+        group: ["node:*", "**/backend/**", "pg", "pg/*", "drizzle-orm", "drizzle-orm/*", "express", "dotenv", "dotenv/*"],
         message: "Shared contracts must remain browser-safe.",
       }] }],
     },

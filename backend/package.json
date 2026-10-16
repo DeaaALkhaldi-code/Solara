@@ -7,21 +7,31 @@
     "dev": "tsx watch --include ../packages/contracts/dist/**/*.js src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts"
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.tools.json",
+    "test": "tsx --test tests/*.test.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:check": "drizzle-kit check",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:migrate:production": "node dist/db/migrate.js",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@solara/contracts": "*",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
+    "drizzle-orm": "^0.45.4",
     "express": "^5.1.0",
-    "mongoose": "^9.0.0",
+    "pg": "^8.23.1",
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.11",
     "tsx": "^4.20.0"
   }
 }

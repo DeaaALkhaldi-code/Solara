@@ -5,7 +5,7 @@ import { logger } from "./lib/logger.js";
 
 async function start() {
   const env = readEnv();
-  await connectDatabase(env.MONGODB_URI);
+  await connectDatabase(env.DATABASE_URL);
   const server = createApp(env.FRONTEND_ORIGIN).listen(env.PORT, () => {
     logger.info(`Solara API listening on port ${env.PORT}`);
   });
@@ -34,7 +34,7 @@ async function start() {
 start().catch(async (error: unknown) => {
   logger.error(error instanceof ConfigurationError
     ? error.message
-    : "Backend startup failed. Check MongoDB availability and connection settings.");
+    : "Backend startup failed. Check PostgreSQL availability and DATABASE_URL.");
   await disconnectDatabase();
   process.exitCode = 1;
 });

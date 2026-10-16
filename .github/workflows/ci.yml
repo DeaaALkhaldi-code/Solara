@@ -1,0 +1,45 @@
+name: Verify Solara
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: solara_test
+          POSTGRES_USER: solara
+          POSTGRES_PASSWORD: ci_only_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U solara -d solara_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      DATABASE_URL: postgresql://solara:ci_only_password@127.0.0.1:5432/solara_test
+      TEST_DATABASE_URL: postgresql://solara:ci_only_password@127.0.0.1:5432/solara_test
+      FRONTEND_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run db:check
+      - run: npm test
+      - run: npm run build
+      - run: npm run db:migrate:production
+      - run: npm run db:migrate:production
+      - run: npm run db:seed
+      - run: npm run db:seed
