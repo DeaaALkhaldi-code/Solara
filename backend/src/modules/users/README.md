@@ -2,7 +2,7 @@
 
 Own-profile reads/updates and administrator user management.
 
-Reserved implementation files: users.routes.ts, users.controller.ts, and users.service.ts. Add them when the feature is implemented; no business routes are mounted now.
+Connected files: users.routes.ts, users.controller.ts, and users.service.ts. The router is mounted in app.ts. GET /scaffold-status is development-only and returns no business/private data; all registered business operations return explicit HTTP 501 until implemented. Replace TODO handlers only after implementing validation and access checks.
 
 Database tables: users, imported from ../../db/schema.js. Access the initialized Drizzle instance with getDatabase() from ../../config/database.js. Use transactions for related writes.
 

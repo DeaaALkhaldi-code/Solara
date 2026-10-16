@@ -4,7 +4,7 @@ One repository with npm workspaces: a Next.js frontend, an Express backend, and 
 
 ## Frameworks and boundaries
 
-- Frontend: Next.js App Router, React, TypeScript, Tailwind v4, Base UI, React Hook Form, Zod resolvers, and Motion. Libraries are installed; page/UI implementations are intentionally absent.
+- Frontend: Next.js App Router, React, TypeScript, Tailwind v4, Base UI, React Hook Form, Zod resolvers, and Motion. Thin placeholder pages compose feature-owned scaffold components; final feature UI remains TODO.
 - Backend: Express, TypeScript, Zod, Drizzle ORM, and node-postgres.
 - Contracts: browser-safe request/response schemas, UUIDs, ISO dates, currency/money conventions, roles, and statuses.
 - Database: 11 relational tables with SQL migrations, foreign keys, indexes, and check constraints.
@@ -36,10 +36,10 @@ Before mounting private routes, implement session verification (401), role check
 
 ## Frontend and deployment
 
-Empty app directories are route reservations, not live URLs. The root layout and Tailwind entry point are the only app framework files. Current responses are default 404 until page.tsx files are added. Feature READMEs describe where components, hooks, and API functions will go.
+Planned app directories now have thin page.tsx placeholders and navigation. Feature-owned scaffold components use api.ts functions and the existing API client. GET /api/<module>/scaffold-status is enabled only in development and uses a separate shared diagnostic schema. Production pages make no diagnostic requests; backend status paths return 404 outside development. Mounted business routes return explicit HTTP 501 through TODO controllers/services. Account/admin placeholders load no private data or permissions. See scaffold-map.md for the complete file map.
 
 Both apps and contracts use ESM. Backend uses NodeNext and explicit .js relative imports; tsx handles development. Contracts compile first; root dev commands watch their output. Next.js uses Webpack because Turbopack's CSS worker failed on the setup machine.
 
 Prefer one production public origin forwarding /api to Express. NEXT_PUBLIC_API_URL must be a browser-reachable URL supplied at frontend build time; it contains no credentials. An internal server-only API URL can be added later if deployment requires it.
 
-No payments, file uploads, email automation, scheduling, page codes, or business endpoints have been implemented.
+No payments, file uploads, email automation, scheduling, final page design, or business logic have been implemented.

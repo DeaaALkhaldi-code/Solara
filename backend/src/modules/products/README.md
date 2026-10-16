@@ -2,7 +2,7 @@
 
 Public product/category browsing and authorized catalog management.
 
-Reserved implementation files: products.routes.ts, products.controller.ts, and products.service.ts. Add them when the feature is implemented; no business routes are mounted now.
+Connected files: products.routes.ts, products.controller.ts, and products.service.ts. The router is mounted in app.ts. GET /scaffold-status is development-only and returns no business/private data; all registered business operations return explicit HTTP 501 until implemented. Replace TODO handlers only after implementing validation and access checks.
 
 Database tables: products, categories, imported from ../../db/schema.js. Access the initialized Drizzle instance with getDatabase() from ../../config/database.js. Use transactions for related writes.
 

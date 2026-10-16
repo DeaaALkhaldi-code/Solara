@@ -42,8 +42,8 @@ test("API foundation and frontend client work together without a database", asyn
   assert.equal(apiErrorSchema.parse(await oversized.json()).error.code, "PAYLOAD_TOO_LARGE");
 
   const businessRoute = await fetch(`${baseUrl}/orders`);
-  assert.equal(businessRoute.status, 404);
-  assert.equal(apiErrorSchema.parse(await businessRoute.json()).error.code, "NOT_FOUND");
+  assert.equal(businessRoute.status, 501);
+  assert.equal(apiErrorSchema.parse(await businessRoute.json()).error.code, "NOT_IMPLEMENTED");
 
   process.env.NEXT_PUBLIC_API_URL = `${baseUrl}/missing`;
   await assert.rejects(getHealth(), (error: unknown) => error instanceof ApiError && error.status === 404);
