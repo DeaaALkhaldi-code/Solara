@@ -1,22 +1,23 @@
 # Solara
 
-Solar-energy platform foundation: Next.js frontend, Express API, MongoDB/Mongoose, and shared Zod contracts in an npm workspace monorepo.
+Solar-energy platform foundation: Next.js frontend, Express API, PostgreSQL with Drizzle ORM, and shared Zod contracts in an npm workspace monorepo.
 
 ## Current status
 
 Framework and infrastructure only. The source repository contained only this README before scaffolding; there were no components, assets, AGENTS.md instructions, or prototypes to migrate.
 
-- Next.js App Router, React, TypeScript, Tailwind CSS v4, and Base UI dependency.
-- Express, validated environment configuration, MongoDB connection, bounded JSON parsing, CORS, common errors, and graceful shutdown.
-- Shared compiled ESM contracts consumed by both applications.
-- Typed frontend API client and infrastructure integration tests.
+- Next.js App Router, React, TypeScript, Tailwind CSS v4, Base UI, React Hook Form, Zod form resolvers, and Motion dependencies.
+- Express, validated environment configuration, a node-postgres connection pool, bounded JSON parsing, CORS, common errors, and graceful shutdown.
+- Drizzle schema, versioned SQL migration, and constraints/indexes for 11 PostgreSQL tables.
+- Shared compiled ESM request/response contracts for all planned feature areas.
+- Typed frontend API client, PostgreSQL migration/contract tests, and GitHub Actions CI with PostgreSQL.
 - Empty tracked folders for planned routes, UI components, features, and backend modules.
 
-**No page implementations, authentication, business endpoints, database models, or design components are included.** The only app component is the framework-required root layout. Route directories contain `.gitkeep`, not `page.tsx`, so the frontend intentionally serves Next.js's default 404 until pages are implemented. Empty folders do not create routes or access protection. There is no frontend health widget; the API client is verified in the integration test.
+**No page implementations, authentication flows, business endpoints, or design components are included.** Database tables and API contracts are ready for feature implementation. The only app component is the framework-required root layout. Route directories contain `.gitkeep`, not `page.tsx`, so the frontend intentionally serves Next.js's default 404 until pages are implemented. Empty folders do not create routes or access protection. There is no frontend health widget; the API client is verified in the integration test.
 
 ## Requirements and setup
 
-Use Node.js 24 LTS (`.nvmrc`), minimum 22.12, and npm 10+. Backend startup requires a local MongoDB instance or an Atlas connection URI.
+Use Node.js 24 LTS (`.nvmrc`), minimum 22.12, and npm 10+. Backend startup requires PostgreSQL 18 (the local/CI target); Docker with Compose is optional if you already have a PostgreSQL server.
 
 Run from the repository root:
 
@@ -31,7 +32,17 @@ Copy-Item frontend/.env.example frontend/.env.local
 Copy-Item backend/.env.example backend/.env
 ```
 
-Set `MONGODB_URI` to your development database. Never commit environment files or put secrets in `NEXT_PUBLIC_` variables.
+Set `DATABASE_URL` to your development PostgreSQL database. The example matches the local Docker service. Its sample password is for local development only. Never commit real environment files or put secrets in `NEXT_PUBLIC_` variables.
+
+Start the local database, apply migrations, and seed reference categories:
+
+```sh
+npm run db:up
+npm run db:migrate
+npm run db:seed
+```
+
+If using an existing PostgreSQL server, create an empty `solara` database, configure `DATABASE_URL`, and skip `db:up`. Migrations are explicit and never run automatically at application startup. No existing database data is converted or removed.
 
 Next.js loads its standard environment files inside `frontend/`, including `.env.local`. The backend explicitly loads `backend/.env` relative to its entry module in development and compiled production output. Existing process environment variables take priority. Contracts load no environment files.
 
@@ -43,7 +54,7 @@ npm run dev
 
 Frontend: `http://localhost:3000` (default 404, intentionally). API: `http://localhost:4000/api/health`.
 
-If MongoDB is unavailable, the backend fails startup. Use `npm run dev:frontend` to work on the frontend independently.
+If PostgreSQL is unavailable, the backend fails startup. Use `npm run dev:frontend` to work on the frontend independently. `npm run db:down` stops the local database without deleting its named data volume.
 
 ## Commands
 
@@ -51,14 +62,21 @@ If MongoDB is unavailable, the backend fails startup. Use `npm run dev:frontend`
 | --- | --- |
 | `npm run dev` | Build contracts, then watch contracts and run both applications |
 | `npm run dev:frontend` | Build/watch contracts and run Next.js |
-| `npm run dev:backend` | Build/watch contracts and run Express; requires MongoDB |
+| `npm run dev:backend` | Build/watch contracts and run Express; requires PostgreSQL |
 | `npm run typecheck` | Build contracts and type-check every workspace |
 | `npm run lint` | Lint active frontend, backend, and contract code |
-| `npm test` | Verify API/client integration and configuration without MongoDB |
+| `npm test` | Verify API/client, contracts, and migrations in embedded PostgreSQL; server test is opt-in |
 | `npm run build` | Build contracts, backend, then frontend |
 | `npm start` | Start both production applications after building |
 | `npm run start:frontend` | Start the production frontend |
 | `npm run start:backend` | Start the production backend |
+| `npm run db:up` / `npm run db:down` | Start/stop local PostgreSQL using Docker Compose |
+| `npm run db:generate` | Generate SQL after editing the Drizzle schema; no live DB needed |
+| `npm run db:check` | Validate migration history metadata; no live DB needed |
+| `npm run db:migrate` | Apply committed SQL migrations to DATABASE_URL |
+| `npm run db:migrate:production` | Apply migrations from compiled backend code after building |
+| `npm run db:seed` | Idempotently insert four reference categories; creates no users |
+| `npm run db:studio` | Open Drizzle's local database browser using DATABASE_URL |
 
 Use one root lockfile. Install dependencies from the root with `npm install <package> -w @solara/frontend` (or the relevant workspace). Root scripts build contracts before dependent apps. Use `npm ci` for reproducible installs.
 
@@ -74,28 +92,36 @@ frontend/
     lib/                 API client, shared UI class utility
 backend/
   src/
-    config/              Environment and MongoDB connection
+    config/              Environment and PostgreSQL connection pool
+    db/                  Drizzle table schema and migration entry point
     modules/             auth, users, products, estimates, orders, tickets
     middleware/          Request validation and error handling
     lib/                 HTTP errors and minimal logging
     app.ts               Express setup, independently testable
     server.ts            Database connection, startup, and shutdown
-  tests/                 Infrastructure integration checks
-  scripts/               Reserved for future database scripts
-packages/contracts/      Browser-safe Zod contracts, inferred types, statuses
+  drizzle/               Committed SQL migration, snapshot, journal
+  tests/                 API, contracts, embedded PostgreSQL, opt-in server checks
+  scripts/               Reference-category seed script
+packages/contracts/      Auth, users, products, estimates, orders, tickets, common DTOs
 docs/                    Architecture, initial database design, API conventions
 tests/e2e/               Reserved; no E2E runner or fake test command
+.github/workflows/ci.yml  Lint, types, tests, build, PostgreSQL migration/seed checks
+compose.yaml             Local PostgreSQL 18 with persistent data volume
 ```
 
 ## Conventions
 
 Keep future route files focused on page composition. Feature-specific components, hooks, and HTTP calls belong in `frontend/src/features/<feature>/`. Generic primitives belong in `components/ui`. Base UI is installed, but no UI components have been invented. `@/*` maps to `frontend/src/*`.
 
-For a backend module, add `<module>.routes.ts`, `<module>.controller.ts`, `<module>.service.ts`, and `<module>.model.ts` only when needed. There are no fake implementations or mounted unfinished routes. Implement authentication and authorization before mounting private endpoints.
+For a backend module, add `<module>.routes.ts`, `<module>.controller.ts`, and `<module>.service.ts` when implementing the feature. Relational tables live centrally in `backend/src/db/schema.ts`, with database types inferred from Drizzle rather than separate model files. Each module README documents its boundary. There are no fake implementations or mounted unfinished routes. Implement authentication and authorization before mounting private endpoints.
 
 Import shared schemas and inferred types from `@solara/contracts`. ESM exports point to `dist/`, built with TypeScript NodeNext. The contracts watcher updates compiled files; Next.js observes the workspace dependency, and the backend watcher includes contract output. Contracts contain no models, database connections, or secrets. Backend validation remains mandatory.
 
-Express owns the application API. Next.js server-rendered pages may fetch Express; browser components use the frontend API client. Neither imports backend source or accesses MongoDB. No duplicate business APIs through Next.js Route Handlers or Server Actions.
+Express owns the application API. Next.js server-rendered pages may fetch Express; browser components use the frontend API client. Neither imports backend source or accesses PostgreSQL. No duplicate business APIs through Next.js Route Handlers or Server Actions.
+
+For production: install/build with development tooling, apply migrations once using `npm run db:migrate:production`, then start the built applications with `npm start`. Preserve `backend/drizzle/` alongside backend build output and the compiled contracts package. The root process runner is a production dependency; individual workspace start commands are also available. Production connection credentials and TLS must be supplied by the deployment environment. No deployment is configured or executed here.
+
+Tests use disposable embedded PostgreSQL via PGlite and require no local DB. Set `TEST_DATABASE_URL` only to a disposable server database to opt into the live node-postgres connection/migration test. CI supplies a PostgreSQL service, tests both adapters, applies production migrations twice, and seeds twice. Do not point the test URL at production.
 
 `docs/archive/` is reserved for historical documentation or prototypes and is excluded from linting. It currently contains no historical files. Keep prototypes outside the active application and `public/`.
 

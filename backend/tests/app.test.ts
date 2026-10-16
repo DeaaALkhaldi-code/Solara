@@ -56,11 +56,15 @@ test("API foundation and frontend client work together without a database", asyn
 test("environment validation rejects missing database configuration and invalid origins", () => {
   assert.equal(envSchema.safeParse({}).success, false);
   assert.equal(envSchema.safeParse({
-    MONGODB_URI: "mongodb://127.0.0.1:27017/solara",
+    DATABASE_URL: "mongodb://127.0.0.1:27017/solara",
+    FRONTEND_ORIGIN: "http://localhost:3000",
+  }).success, false);
+  assert.equal(envSchema.safeParse({
+    DATABASE_URL: "postgresql://solara:local@127.0.0.1:5432/solara",
     FRONTEND_ORIGIN: "http://localhost:3000/path",
   }).success, false);
   assert.equal(envSchema.parse({
-    MONGODB_URI: "mongodb://127.0.0.1:27017/solara",
+    DATABASE_URL: "postgresql://solara:local@127.0.0.1:5432/solara",
     FRONTEND_ORIGIN: "http://localhost:3000",
   }).PORT, 4000);
 });

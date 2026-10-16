@@ -14,11 +14,21 @@
     "start": "concurrently -k -n frontend,backend \"npm run start -w @solara/frontend\" \"npm run start -w @solara/backend\"",
     "start:frontend": "npm run start -w @solara/frontend",
     "start:backend": "npm run start -w @solara/backend",
-    "test": "npm run build -w @solara/contracts && npm run test -w @solara/backend"
+    "test": "npm run build -w @solara/contracts && npm run test -w @solara/backend",
+    "db:generate": "npm run build -w @solara/contracts && npm run db:generate -w @solara/backend",
+    "db:check": "npm run build -w @solara/contracts && npm run db:check -w @solara/backend",
+    "db:migrate": "npm run build -w @solara/contracts && npm run db:migrate -w @solara/backend",
+    "db:migrate:production": "npm run db:migrate:production -w @solara/backend",
+    "db:seed": "npm run build -w @solara/contracts && npm run db:seed -w @solara/backend",
+    "db:studio": "npm run build -w @solara/contracts && npm run db:studio -w @solara/backend",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
-    "concurrently": "^9.2.1",
     "eslint": "^9.39.0",
     "eslint-config-next": "^16.0.0",
     "typescript": "^5.9.3",
