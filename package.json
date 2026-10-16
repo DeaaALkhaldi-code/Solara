@@ -1,0 +1,27 @@
+{
+  "name": "solara",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["frontend", "backend", "packages/*"],
+  "engines": { "node": ">=22.12.0", "npm": ">=10" },
+  "scripts": {
+    "dev": "npm run build -w @solara/contracts && concurrently -k -n contracts,frontend,backend \"npm run dev -w @solara/contracts\" \"npm run dev -w @solara/frontend\" \"npm run dev -w @solara/backend\"",
+    "dev:frontend": "npm run build -w @solara/contracts && concurrently -k \"npm run dev -w @solara/contracts\" \"npm run dev -w @solara/frontend\"",
+    "dev:backend": "npm run build -w @solara/contracts && concurrently -k \"npm run dev -w @solara/contracts\" \"npm run dev -w @solara/backend\"",
+    "build": "npm run build -w @solara/contracts && npm run build -w @solara/backend && npm run build -w @solara/frontend",
+    "typecheck": "npm run build -w @solara/contracts && npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "start": "concurrently -k -n frontend,backend \"npm run start -w @solara/frontend\" \"npm run start -w @solara/backend\"",
+    "start:frontend": "npm run start -w @solara/frontend",
+    "start:backend": "npm run start -w @solara/backend",
+    "test": "npm run build -w @solara/contracts && npm run test -w @solara/backend"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}
