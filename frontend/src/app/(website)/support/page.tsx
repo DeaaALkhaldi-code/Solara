@@ -1,9 +1,10 @@
-import { SupportScaffold } from "@/features/support/components/support-scaffold";
+import SupportPage from "@/features/support/components/SupportPage";
+
+export const metadata = {
+  title: "Technical support",
+  description: "Report a solar system issue or check a support request.",
+};
 
 export default function Page() {
-  return <SupportScaffold
-    title="Technical support"
-    purpose="Prepare the customer support entry point."
-    todos={["Build the support request form.","Implement authenticated ticket creation and ownership checks."]}
-  />;
+  return <SupportPage />;
 }

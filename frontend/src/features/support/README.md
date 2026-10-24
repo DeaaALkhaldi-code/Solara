@@ -1,7 +1,7 @@
-# support frontend feature
+# Support frontend feature
 
-Ticket creation, customer replies, and admin support interfaces.
+The `/support` route renders `components/SupportPage.tsx`. The page, its form, ticket tracker, animation, styles, sample data, and types live in this feature folder.
 
-The components/support-scaffold.tsx entry point composes a shared placeholder and passes its typed api.ts diagnostic function. Implement feature components/hooks inside these existing folders. Keep route files thin and use the existing API client and @solara/contracts for future business requests.
+The request form and ticket tracker are frontend demos. A submission creates a reference only in the current browser session; attachments are not uploaded. The sample ticket is stored in `support.data.ts`. No support API request, database write, or maintenance booking happens here.
 
-Use React Hook Form with @hookform/resolvers/zod for forms, Base UI/Tailwind for shared UI, and Motion when animation is needed. Shared generic elements belong in src/components/. Pages contain placeholders only; business feature implementation remains TODO. Never import backend source or database libraries.
+`api.ts` and `components/support-scaffold.tsx` remain from the connected scaffold for future API integration. Implement real requests through the frontend API client and `@solara/contracts`, without importing backend source into the frontend.
